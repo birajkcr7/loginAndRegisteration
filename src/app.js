@@ -5,7 +5,6 @@ const Register = require("./models/registers");
 const path = require("path");
 const hbs= require("hbs");
 
-
 const app = express();
 const port = process.env.PORT || 8000;
 
@@ -66,6 +65,28 @@ app.post("/register",  async (req,res)=>{
     } catch (error) {
         res.status(400).send(error);
     }
+})
+
+// LOGIN validation
+
+app.post("/login", async(req,res)=>{
+    try {
+        
+        const email = req.body.email;
+        const password = req.body.password;
+
+        const userEmail = await Register.findOne({email : email });
+        
+        if(userEmail.password === password ){
+            res.status(201).render("index");
+        }else{
+            res.send("password not matching");
+        }
+
+    } catch (error) {
+        res.status(400).send("invalid")
+    }
+    
 })
 
 app.listen(port, ()=>{

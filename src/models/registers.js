@@ -1,4 +1,5 @@
 const mongoose =require("mongoose");
+const validator = require("validator");
 
 const employeeSchema = new mongoose.Schema({
     firstname : {
@@ -12,6 +13,11 @@ const employeeSchema = new mongoose.Schema({
     email : {
         type: String,
         require : true,
+        validate(value){
+            if(validator.isEmail(value)){
+                throw new error("invalid Email");
+            }
+        } 
         
     },
     gender : {
