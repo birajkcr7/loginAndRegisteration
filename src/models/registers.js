@@ -1,5 +1,6 @@
 const mongoose =require("mongoose");
 const validator = require("validator");
+const bcrypt =require('bcryptjs');
 
 const employeeSchema = new mongoose.Schema({
     firstname : {
@@ -14,7 +15,7 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         require : true,
         validate(value){
-            if(validator.isEmail(value)){
+            if(!validator.isEmail(value)){
                 throw new error("invalid Email");
             }
         } 
@@ -38,6 +39,16 @@ const employeeSchema = new mongoose.Schema({
         require : true,
     },
 });
+
+
+employeeSchema.pre("save",async function(next) {
+
+    if(this.isModified("password")){
+        this.password = await bcrypt.hash(this.password, 10);
+      
+    }
+    next();
+} )
 
 
 //  creating the collection

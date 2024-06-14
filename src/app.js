@@ -4,6 +4,7 @@ const Register = require("./models/registers");
 
 const path = require("path");
 const hbs= require("hbs");
+const { register } = require('module');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -23,11 +24,16 @@ hbs.registerPartials(partialsPath);
 
 
 app.get("/", (req,res)=>{
-    res.render("index");
+    res.render("index",{
+        // login : "login",
+        // register : "Sign up"
+    });
 })
 
 app.get("/login", (req,res)=>{
-    res.render("login");
+    res.render("login",{
+        // login : `${req.body.firstname}`,
+    });
 })
 
 app.get("/register", (req,res)=>{
@@ -53,6 +59,10 @@ app.post("/register",  async (req,res)=>{
             password : req.body.password,
             confirmpassword : req.body.confirmpassword,
         });
+
+        // password hashingg...
+
+
 
         const registered = registerEmp.save();
         res.status(201).render("index");
@@ -88,6 +98,24 @@ app.post("/login", async(req,res)=>{
     }
     
 })
+
+
+
+
+// const bcrypt = require("bcryptjs");
+
+// const securePassword = async(password)=>{
+
+//     const passwordHash = await bcrypt.hash(password, 10);
+//     console.log(passwordHash);
+
+//     const passwordMatch = await bcrypt.compare(password, passwordHash);
+//     console.log(passwordMatch);
+// }
+
+// securePassword("biraj123")
+
+
 
 app.listen(port, ()=>{
     console.log(`connected to port ${port}`);
