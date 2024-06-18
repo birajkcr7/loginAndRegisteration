@@ -1,11 +1,10 @@
 const express = require('express');
 require("./db/conn");
-const Register = require("./models/registers");
 const bcrypt =require("bcryptjs");
+const Register = require("./models/registers");
 
 const path = require("path");
 const hbs= require("hbs");
-const { register } = require('module');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -17,6 +16,7 @@ const partialsPath =path.join(__dirname,"../templates/partials");
 // to get the data from the page we should do this
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
+
 
 app.use(express.static(staticPath));
 app.set("view engine", "hbs");
@@ -61,6 +61,8 @@ app.post("/register",  async (req,res)=>{
             confirmpassword : req.body.confirmpassword,
         });
 
+        const token = await registerEmp.generateAuthToken();
+
         const registered = registerEmp.save();
         res.status(201).render("index");
 
@@ -84,7 +86,7 @@ app.post("/login", async(req,res)=>{
 
         const userEmail = await Register.findOne({email : email });
 
-        const isMatch = bcrypt.compare(password,userEmail.password);
+        const isMatch = await bcrypt.compare(password,userEmail.password);
         
         if(isMatch){
             res.status(201).render("index");
@@ -99,8 +101,6 @@ app.post("/login", async(req,res)=>{
 })
 
 
-
-
 // const bcrypt = require("bcryptjs");
 
 // const securePassword = async(password)=>{
@@ -113,6 +113,22 @@ app.post("/login", async(req,res)=>{
 // }
 
 // securePassword("biraj123")
+
+
+// const jwt = require("jsonwebtoken");
+
+
+// const createToken = async()=>{
+
+//      const token = await jwt.sign({_id:"666c247ebb2636f93d44a5c9"}, "mynameisbirajkcr7andiamronaldofan");
+//      console.log(token);
+
+//      const userVer = await jwt.verify(token,"mynameisbirajkcr7andiamronaldofan");
+//      console.log(userVer)
+// }
+
+
+// createToken();
 
 
 
