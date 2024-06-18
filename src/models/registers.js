@@ -47,6 +47,8 @@ const employeeSchema = new mongoose.Schema({
     }]
 });
 
+
+// adding the token in register
 employeeSchema.methods.generateAuthToken = async function(){
     try {
         const token = jwt.sign({_id: this._id.toString()}, "mynameisbirajkcandiamgoingtoamerica");
@@ -54,7 +56,7 @@ employeeSchema.methods.generateAuthToken = async function(){
         await this.save();
         return token;
     } catch (error) {
-        
+        console.log("error in registering");
     }
 }
 
@@ -67,7 +69,7 @@ employeeSchema.pre("save",async function(next) {
 
         this.password = await bcrypt.hash(this.password, 10);
         this.confirmpassword = await bcrypt.hash(this.password, 10);
-        
+
     }
     next();
 } )
